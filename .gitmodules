@@ -7,3 +7,6 @@
 [submodule "ext/eigen"]
 	path = ext/eigen
 	url = https://gitlab.com/libeigen/eigen
+[submodule "ext/boost"]
+	path = ext/boost
+	url = https://github.com/boostorg/boost

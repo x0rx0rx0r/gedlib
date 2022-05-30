@@ -1,3 +1,6 @@
 [submodule "ext/libsvm"]
 	path = ext/libsvm
 	url = https://github.com/cjlin1/libsvm
+[submodule "ext/fann"]
+	path = ext/fann
+	url = https://github.com/libfann/fann

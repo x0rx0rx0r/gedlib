@@ -20,7 +20,7 @@
 ############################################################################
 
 add_library(gxlgedlib SHARED env/ged_env.gxl.cpp)
-set_target_properties(gxlgedlib PROPERTIES SUFFIX ".lib")
+set_target_properties(gxlgedlib PROPERTIES SUFFIX ".dll")
 target_link_libraries(gxlgedlib doublefann libsvm)
 if(GUROBI_HOME)
   target_link_libraries(gxlgedlib ${GUROBI_STATLIB} ${GUROBI_DYLIB})

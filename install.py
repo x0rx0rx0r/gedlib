@@ -44,14 +44,14 @@ import platform
 
 def append_ged_env_hpp(identifier, node_id_type, node_label_type, edge_label_type):
 	append = ""
-	append = append + "\n";
+	append = append + "\n"
 	append = append + "#ifdef " + identifier.upper() + "_GEDLIB_SHARED\n"
 	append = append + "#ifndef SRC_ENV_GED_ENV_" + identifier.upper() + "_CPP_\n"
 	append = append + "extern template class GEDEnv<" + node_id_type + ", " + node_label_type + ", " + edge_label_type + ">;\n"
 	append = append + "#endif /* SRC_ENV_GED_ENV_" + identifier.upper() + "_CPP_ */\n"
 	append = append + "#endif /*" + identifier.upper() + "_GEDLIB_SHARED */\n"
 	delete_line = 0
-	temp = open("temp", "wb")
+	temp = open("temp", "w")
 	with open("src/env/ged_env.hpp", "r") as f:
 		for line in f:
 			if line.startswith("#ifdef ") and not line.startswith("#ifdef GXL_GEDLIB_SHARED"):
@@ -68,11 +68,11 @@ def append_cmake_lists(identifier):
     append = ""
     append = append + "\n"
     append = append + "add_library(" + identifier.lower() + "gedlib SHARED env/ged_env." + identifier.lower() + ".cpp)\n"
-    append = append + "set_target_properties(" + identifier.lower() + "gedlib PROPERTIES SUFFIX \".lib\")\n"
+    append = append + "set_target_properties(" + identifier.lower() + "gedlib PROPERTIES SUFFIX \".dll\")\n"
     append = append + "target_link_libraries(" + identifier.lower() + "gedlib doublefann libsvm)\n"
     delete_line = 0
     ignore_next_endif = False
-    temp = open("temp", "wb")
+    temp = open("temp", "w")
     with open("src/CMakeLists.txt", "r") as f:
         for line in f:
             if line.startswith("if(GUROBI_HOME)"):
@@ -194,8 +194,6 @@ def build_gedlib(args):
 	
 	if args.lib:
 		print("\n***** Build shared library. *****")
-		commands = "cd build && make " + identifier.lower() + "gedlib"
-		call(commands, shell=True)
 
 	if args.tests:
 		print("\n***** Build test executables. *****")

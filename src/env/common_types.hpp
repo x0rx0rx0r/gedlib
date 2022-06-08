@@ -75,7 +75,6 @@
 #include <doublefann.h>
 #include <fann_cpp.h>
 #include <Dense>
-#include <nomad.hpp>
 
 // Include helper classes.
 #include "timer.hpp"

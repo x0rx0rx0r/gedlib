@@ -38,6 +38,7 @@ from subprocess import check_output
 import argparse
 import shutil
 import os.path
+import os
 import glob
 import platform
 
@@ -67,15 +68,8 @@ def append_cmake_lists(identifier):
     append = ""
     append = append + "\n"
     append = append + "add_library(" + identifier.lower() + "gedlib SHARED env/ged_env." + identifier.lower() + ".cpp)\n"
-    append = append + "set_target_properties(" + identifier.lower() + "gedlib PROPERTIES SUFFIX \".so\")\n"
-    append = append + "target_link_libraries(" + identifier.lower() + "gedlib nomad doublefann svm)\n"
-    append = append + "if(APPLE)\n"
-    append = append + "  add_custom_command(TARGET " + identifier.lower() + "gedlib POST_BUILD COMMAND install_name_tool -change libnomad.so ${NOMAD_HOME}/lib/libnomad.so ${LIBRARY_OUTPUT_PATH}/lib" + identifier.lower() + "gedlib.so)\n"
-    append = append + "  add_custom_command(TARGET " + identifier.lower() + "gedlib POST_BUILD COMMAND install_name_tool -change libdoublefann.2.dylib ${FANN_HOME}/lib/libdoublefann.2.dylib ${LIBRARY_OUTPUT_PATH}/lib" + identifier.lower() + "gedlib.so)\n"
-    append = append + "  add_custom_command(TARGET " + identifier.lower() + "gedlib POST_BUILD COMMAND install_name_tool -change libsvm.so ${LIBSVM_HOME}/libsvm.so ${LIBRARY_OUTPUT_PATH}/lib" + identifier.lower() + "gedlib.so)\n"
-    append = append + "  target_link_libraries(" + identifier.lower() + "gedlib omp)\n"
-    append = append + "  add_custom_command(TARGET " + identifier.lower() + "gedlib POST_BUILD COMMAND install_name_tool -change libomp.dylib ${OMP_HOME}/lib/libomp.dylib ${LIBRARY_OUTPUT_PATH}/lib" + identifier.lower() + "gedlib.so)\n"
-    append = append + "endif()\n"
+    append = append + "set_target_properties(" + identifier.lower() + "gedlib PROPERTIES SUFFIX \".lib\")\n"
+    append = append + "target_link_libraries(" + identifier.lower() + "gedlib doublefann libsvm)\n"
     delete_line = 0
     ignore_next_endif = False
     temp = open("temp", "wb")
@@ -123,12 +117,12 @@ def parse_custom_types(custom_types):
 
 def create_directories():
 	print("\n***** Create directories for shared libraries, executables and output. *****")
-	commands = "mkdir -p lib; "
-	commands = commands + "mkdir -p tests/ijprai2020/bin; mkdir -p tests/ijprai2020/output; "
-	commands = commands + "mkdir -p tests/vldbj2020/bin; mkdir -p tests/vldbj2020/ini; mkdir -p tests/vldbj2020/results; "
-	commands = commands + "mkdir -p median/bin; mkdir -p median/output; mkdir -p median/data; mkdir -p median/data/Letter; mkdir -p median/data/Mutagenicity; "
-	commands = commands + "mkdir -p tests/sspr2018/bin; mkdir -p tests/sspr2018/output; "
-	commands = commands + "mkdir -p tests/unit_tests/bin; mkdir -p tests/unit_tests/output"
+	commands = "mkdir lib && "
+	commands = commands + "mkdir tests\\ijprai2020\\bin && mkdir tests\\ijprai2020\\output && "
+	commands = commands + "mkdir tests\\vldbj2020\\bin && mkdir tests\\vldbj2020\\ini && mkdir tests\\vldbj2020\\results && "
+	commands = commands + "mkdir median\\bin && mkdir median\\output && mkdir median\\data && mkdir median\\data\\Letter && mkdir median\\data\\Mutagenicity && "
+	commands = commands + "mkdir tests\\sspr2018\\bin && mkdir tests\\sspr2018\\output && "
+	commands = commands + "mkdir tests\\unit_tests\\bin && mkdir tests\\unit_tests\\output"
 	call(commands, shell=True)
 
 def build_external_libraries():
@@ -136,13 +130,15 @@ def build_external_libraries():
 		print("\n***** External libraries already installed. *****")
 	else:
 		print("\n***** Install external libraries. *****")
-		commands = "cd ext/fann.2.2.0; mkdir -p build; cd build; rm -rf *; cmake -DCMAKE_INSTALL_PREFIX=.. ..; make install; cd ..; rm -rf build"
+		vcvarsPath = os.environ["ProgramFiles(x86)"]
+		vcvarsPath = "\"" + vcvarsPath + "\\Microsoft Visual Studio\\2019\\Professional\\VC\\Auxiliary\\Build\\vcvars64.bat" + "\""
+
+		commands = vcvarsPath + " && cd ext\\fann && cmake -G \"Visual Studio 16 2019\" . && msbuild FANN.sln -property:Configuration=Release"
 		call(commands, shell=True) 
-		commands = "cd ext/nomad.3.8.1; mkdir -p lib; mkdir -p bin; cd src; make clean; make all; make clean; rm -rf ../bin"
+
+		commands = vcvarsPath + " && cd ext\\libsvm && nmake -f Makefile.win"
 		call(commands, shell=True)
-		commands = "cd ext/libsvm.3.22; make lib; rm -f svm.o"
-		call(commands, shell=True)
-		f = open("ext/.INSTALLED", "w")
+		f = open("ext\\.INSTALLED", "w")
 		f.close()
 		
 def determine_gurobi_dylib(gurobi_root):
@@ -175,12 +171,12 @@ def build_gedlib(args):
 		call(commands, shell=True)
 	
 	print("\n***** Goto build directory. *****")
-	commands = "mkdir -p build"
+	commands = "mkdir build"
 	call(commands, shell=True)
 	
 	if (not os.path.isfile("build/Makefile")):
 		print("\n***** Run CMake. *****")
-		commands = "cd build; rm -rf *; cmake .. -DCMAKE_BUILD_TYPE="
+		commands = "cd build && cmake .. -G \"Visual Studio 16 2019\" -DCMAKE_BUILD_TYPE="
 		if args.debug:
 			commands = commands + "Debug"
 		else:
@@ -193,21 +189,21 @@ def build_gedlib(args):
 
 	if args.doc:
 		print("\n***** Generate documentation. *****")
-		commands = "cd build; make doc"
+		commands = "cd build && make doc"
 		call(commands, shell=True)
 	
 	if args.lib:
 		print("\n***** Build shared library. *****")
-		commands = "cd build; make " + identifier.lower() + "gedlib"
+		commands = "cd build && make " + identifier.lower() + "gedlib"
 		call(commands, shell=True)
 
 	if args.tests:
 		print("\n***** Build test executables. *****")
 		if args.tests == "all":
-			commands = "cd build; make tests"
+			commands = "cd build && make tests"
 			call(commands, shell=True)
 		else:
-			commands = "cd build; make " + args.tests
+			commands = "cd build && make " + args.tests
 			call(commands, shell=True)
 			
 

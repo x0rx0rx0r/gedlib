@@ -23,7 +23,6 @@
  * @file  ml_based_method.ipp
  * @brief ged::MLBasedMethod class definition.
  */
-
 #ifndef SRC_METHODS_ML_BASED_METHOD_IPP_
 #define SRC_METHODS_ML_BASED_METHOD_IPP_
 
@@ -250,7 +249,7 @@ lsape_set_default_options_() {
 	ground_truth_options_ = "";
 	ground_truth_method_ = new IPFP<UserNodeLabel, UserEdgeLabel>(this->ged_data_);
 	ground_truth_method_->set_options(std::string("--initial-solutions 80 --ratio-runs-from-initial-solutions 0.5 --lower-bound-method BRANCH_TIGHT --threads ") + std::to_string(this->num_threads_));
-	dnn_params_.activation_candidates = {FANN::activation_function_enum::RELU, FANN::activation_function_enum::SIGMOID};
+	dnn_params_.activation_candidates = {FANN::activation_function_enum::LINEAR, FANN::activation_function_enum::SIGMOID};
 	dnn_params_.min_num_hidden_layers = 1;
 	dnn_params_.max_num_hidden_layers = 10;
 	dnn_params_.min_num_neurons_per_layer = 1;
@@ -371,7 +370,7 @@ lsape_parse_option_(const std::string & option, const std::string & arg) {
 				dnn_params_.activation_candidates.push_back(FANN::activation_function_enum::SIGMOID);
 			}
 			else if (activation == "RELU") {
-				dnn_params_.activation_candidates.push_back(FANN::activation_function_enum::RELU);
+				dnn_params_.activation_candidates.push_back(FANN::activation_function_enum::LINEAR);
 			}
 			else {
 				throw Error(std::string("Invalid argument ") + arg  + " for option dnn-activation. Usage: options = \"[--dnn-activation SIGMOID|RELU[,SIGMOID|RELU]] [...]\"");
@@ -744,7 +743,10 @@ load_or_generate_training_data_() {
 			}
 		}
 		std::cout << "\n";
-		std::random_shuffle(assignments_.begin(), assignments_.end());
+
+		std::random_device thread_local static rd{};
+		std::default_random_engine thread_local static rng{ rd() };
+		std::shuffle(assignments_.begin(), assignments_.end(), rng);
 	}
 
 	// Initialize the specialized training data for DNN_ or SVM_.
@@ -960,7 +962,7 @@ template<class UserNodeLabel, class UserEdgeLabel>
 MLBasedMethod<UserNodeLabel, UserEdgeLabel>::
 DNNParams_ ::
 DNNParams_() :
-activation_candidates{FANN::activation_function_enum::RELU, FANN::activation_function_enum::SIGMOID},
+activation_candidates{FANN::activation_function_enum::LINEAR, FANN::activation_function_enum::SIGMOID},
 min_num_hidden_layers{1},
 max_num_hidden_layers{10},
 min_num_neurons_per_layer{1},

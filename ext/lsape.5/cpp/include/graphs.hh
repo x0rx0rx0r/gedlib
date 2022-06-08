@@ -1315,7 +1315,9 @@ namespace liblsap {
 
 	// permutation of V2 (which is larger than V1)
 	for (; n_idx <= n_end2; n_idx++) v.push_back(n_idx);
-	std::random_shuffle(v.begin(),v.end());
+	std::random_device thread_local static rd{};
+	std::default_random_engine thread_local static rng{ rd() };
+	std::shuffle(v.begin(),v.end(), rng);
 	
 	// insert arcs from V1 to V2 (all nodes of V1 are covered by a matching)
 	typename std::vector<IndexType>::const_iterator it = v.cbegin(), end = v.cend();
@@ -1335,7 +1337,7 @@ namespace liblsap {
 	if (dmax > nbRealNodes(0)) dmax = nbRealNodes(0);
 	// save indicies of V1
 	for (n_idx = this->minRealNodeIdxS1(); n_idx <= n_end; n_idx++) v.push_back(n_idx);
-	std::random_shuffle(v.begin(),v.end());
+	std::shuffle(v.begin(),v.end(), rng);
 	
 	for (n_idx = this->minRealNodeIdxS2(), n_idx1 = 0; n_idx <= n_end2; n_idx++) {
 	  // insert arcs from dummy node in V1 to uncovered nodes in V2
@@ -1344,7 +1346,7 @@ namespace liblsap {
 	  // insert arcs from V2 to V1 by iteratively permuting indicies of V1
 	  // so that output degree of nodes in V2 is random between 0 and dmax
 	  deg = std::rand()%dmax;
-	  if (n_idx1+deg > n_end) { std::random_shuffle(v.begin(),v.end()); n_idx1 = 0; }
+	  if (n_idx1+deg > n_end) { std::shuffle(v.begin(),v.end(), rng); n_idx1 = 0; }
 	  for (dcpt = 1; dcpt <= deg; dcpt++)
 	    { ParentGraph::insertArc(n_idx,v[n_idx1]); n_idx1++; }
 	}

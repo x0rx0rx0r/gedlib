@@ -175,12 +175,6 @@ ged_parse_option_(const std::string & option, const std::string & arg) {
 		else if (arg == "NODE") {
 			initialization_method_ = new Node<UserNodeLabel, UserEdgeLabel>(this->ged_data_);
 		}
-		else if (arg == "RING_ML") {
-			initialization_method_ = new RingML<UserNodeLabel, UserEdgeLabel>(this->ged_data_);
-		}
-		else if (arg == "RING") {
-			initialization_method_ = new Ring<UserNodeLabel, UserEdgeLabel>(this->ged_data_);
-		}
 		else if (arg == "SUBGRAPH") {
 			initialization_method_ = new Subgraph<UserNodeLabel, UserEdgeLabel>(this->ged_data_);
 		}

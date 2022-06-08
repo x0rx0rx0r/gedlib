@@ -64,7 +64,6 @@
 #include "branch_fast.hpp"         // Declares BranchFast. Dependencies: "lsape_based_method.hpp".
 #include "branch_uniform.hpp"      // Declares BranchUniform. Dependencies: "lsape_based_method.hpp".
 #include "node.hpp"                // Declares Node. Dependencies: "lsape_based_method.hpp".
-#include "ring.hpp"                // Declares Ring. Dependencies: "lsape_based_method.hpp".
 #include "star.hpp"                // Declares Star. Dependencies: "lsape_based_method.hpp".
 #include "subgraph.hpp"            // Declares Subgraph. Dependencies: "lsape_based_method.hpp".
 #include "walks.hpp"               // Declares Walks. Dependencies: "lsape_based_method.hpp".
@@ -78,7 +77,6 @@
 // Declarations of concrete derived classes of MLBasedMethod.
 
 #include "bipartite_ml.hpp"        // Declares BipartiteML. Dependencies: "ml_based_method.hpp".
-#include "ring_ml.hpp"             // Declares RingML. Dependencies: "ml_based_method.hpp".
 
 // Definitions of abstract classes.
 
@@ -116,7 +114,6 @@
 #include "branch_fast.ipp"         // Defines BranchFast. Dependencies: "branch_fast.hpp", "lsape_based_method.hpp".
 #include "branch_uniform.ipp"      // Defines BranchUniform. Dependencies: "branch_uniform.hpp", "lsape_based_method.hpp".
 #include "node.ipp"                // Defines Node. Dependencies: "node.hpp", "lsape_based_method.hpp".
-#include "ring.ipp"                // Defines Ring. Dependencies: "ring.hpp", "lsape_based_method.hpp".
 #include "star.ipp"                // Defines Star. Dependencies: "star.hpp", "lsape_based_method.hpp".
 #include "subgraph.ipp"            // Defines Subgraph. Dependencies: "subgraph.hpp", "lsape_based_method.hpp", "exact.hpp".
 #include "walks.ipp"               // Defines Walks. Dependencies: "walks.hpp", "lsape_based_method.hpp".
@@ -130,7 +127,6 @@
 // Definitions of concrete derived classes of MLBasedMethod.
 
 #include "bipartite_ml.ipp"        // Defines BipartiteML. Dependencies: "bipartite_ml.ipp", "ml_based_method.hpp".
-#include "ring_ml.ipp"             // Defines RingML. Dependencies: "ring_ml.ipp", "ml_based_method.hpp".
 
 
 #endif /* SRC_METHODS_ALL_METHODS_HPP_ */

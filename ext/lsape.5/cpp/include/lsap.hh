@@ -900,6 +900,8 @@ namespace liblsap {
 							    bool cumul = false)
     {
       IndexType i = 0, i_beg = 0, i_end = 0, step = _n1/nb_scc, diff = _n1%nb_scc, s = 0;
+	  std::random_device thread_local static rd{};
+	  std::default_random_engine thread_local static rng{ rd() };
       if (_C == NULL) _C = new DataType[_n1*_n2];
       for (IndexType j = 0; j < _n2; j++)
 	for (i = 0; i < _n1; i++)
@@ -913,7 +915,7 @@ namespace liblsap {
 	    i_end = (s+1)*step + (s == nb_scc-1 ? diff : 0);
 	    v.clear();
 	    for (i = i_beg; i < i_end; i++) v.push_back(i);
-	    std::random_shuffle(v.begin(),v.end());
+	    std::shuffle(v.begin(),v.end(), rng);
 	    for (i = i_beg; i < i_end; i++) _C[sub2idx(i,v[i-i_beg],_n1)] = 0;
 	  }
 	}
@@ -925,7 +927,7 @@ namespace liblsap {
 	    i_end = (s+1)*step + (s == nb_scc-1 ? diff : 0);
 	    v.clear();
 	    for (i = i_beg; i < i_end; i++) v.push_back(i);
-	    std::random_shuffle(v.begin(),v.end());
+	    std::shuffle(v.begin(),v.end(), rng);
 	    for (i = i_beg; i < i_end; i++) _C[sub2idx(i,v[i-i_beg],_n1)]--;
 	  }
 	}

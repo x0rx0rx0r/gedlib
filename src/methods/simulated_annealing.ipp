@@ -256,9 +256,6 @@ ged_parse_option_(const std::string & option, const std::string & arg) {
 		else if (arg == "NODE") {
 			lsape_method_ = new Node<UserNodeLabel, UserEdgeLabel>(this->ged_data_);
 		}
-		else if (arg == "RING") {
-			lsape_method_ = new Ring<UserNodeLabel, UserEdgeLabel>(this->ged_data_);
-		}
 		else if (arg == "SUBGRAPH") {
 			lsape_method_ = new Subgraph<UserNodeLabel, UserEdgeLabel>(this->ged_data_);
 		}
@@ -267,9 +264,6 @@ ged_parse_option_(const std::string & option, const std::string & arg) {
 		}
 		else if (arg == "BIPARTITE_ML") {
 			lsape_method_ = new BipartiteML<UserNodeLabel, UserEdgeLabel>(this->ged_data_);
-		}
-		else if (arg == "RINGE_ML") {
-			lsape_method_ = new RingML<UserNodeLabel, UserEdgeLabel>(this->ged_data_);
 		}
 		else if (arg != "BIPARTITE") {
 			throw Error("Invalid argument \"" + arg + "\" for option lsape-method. Usage: options = \"[--lsape-method BIPARTITE|BRANCH_FAST|BRANCH_UNIFORM|BRANCH|NODE|RING|SUBGRAPH|WALKS|BIPARTITE_ML|RING_ML] [...]");

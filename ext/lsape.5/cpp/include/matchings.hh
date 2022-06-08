@@ -159,11 +159,13 @@ namespace liblsap {
     {
       bool n1_inf_n2 = _n1 <= _n2;
       IndexType i, j;
+	  std::random_device thread_local static rd{};
+	  std::default_random_engine thread_local static rng{ rd() };
       if (!n1_inf_n2) transpose();
       for (j = 0; j < _n2; j++) { _m[1][j] = _n1; }
       std::vector<IndexType> v;
       for (j = 0; j < _n2; j++) v.push_back(j);
-      std::random_shuffle(v.begin(),v.end());
+      std::shuffle(v.begin(),v.end(), rng);
       for (i = 0; i < _n1; i++) {
 	_m[0][i] = v[i];
 	_m[1][v[i]] = i;

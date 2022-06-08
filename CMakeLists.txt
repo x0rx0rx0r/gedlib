@@ -43,34 +43,23 @@ if(DOXYGEN_FOUND)
 endif()
 
 # Set up the compiler.
-
-set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wextra -pedantic -Wredundant-decls -Wdisabled-optimization -Wctor-dtor-privacy -Wnon-virtual-dtor -Werror=old-style-cast -Wsign-promo -Werror=return-type -Wno-unused-parameter")
-if(APPLE)
-  set(CMAKE_CXX_COMPILER clang++ CACHE STRING "C++ compiler" FORCE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp")
-else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
-endif()
-
-
-set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+set(CMAKE_CXX_FLAGS_DEBUG "/Za /D \"NOMINMAX\" /Od /std:c++latest")
+set(CMAKE_CXX_FLAGS_RELEASE "/Za /D \"NOMINMAX\" /O2 /GL /std:c++latest")
 set(CMAKE_MACOSX_RPATH ON)
 
 # Define variables.
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
 set(LSAPE_HOME ${CMAKE_SOURCE_DIR}/ext/lsape.5)
-set(NOMAD_HOME ${CMAKE_SOURCE_DIR}/ext/nomad.3.8.1)
-set(LIBSVM_HOME ${CMAKE_SOURCE_DIR}/ext/libsvm.3.22)
-set(EIGEN_HOME ${CMAKE_SOURCE_DIR}/ext/eigen.3.3.4)
-set(FANN_HOME ${CMAKE_SOURCE_DIR}/ext/fann.2.2.0)
-set(BOOST_HOME ${CMAKE_SOURCE_DIR}/ext/boost.1.69.0)
+set(LIBSVM_HOME ${CMAKE_SOURCE_DIR}/ext/libsvm)
+set(EIGEN_HOME ${CMAKE_SOURCE_DIR}/ext/eigen)
+set(FANN_HOME ${CMAKE_SOURCE_DIR}/ext/fann)
+set(BOOST_HOME ${CMAKE_SOURCE_DIR}/ext/boost)
 
 # Add include and link directories.
 
-include_directories(SYSTEM ${BOOST_HOME} ${NOMAD_HOME}/ext/sgtelib/src ${NOMAD_HOME}/src ${LSAPE_HOME}/cpp/include ${EIGEN_HOME}/Eigen ${LIBSVM_HOME} ${FANN_HOME}/include ${GUROBI_HOME}/include ${OMP_HOME}/include)
-link_directories(${NOMAD_HOME}/lib ${FANN_HOME}/lib ${LIBSVM_HOME} ${GUROBI_HOME}/lib ${OMP_HOME}/lib)
+include_directories(SYSTEM ${BOOST_HOME} ${LSAPE_HOME}/cpp/include ${EIGEN_HOME}/Eigen ${LIBSVM_HOME} ${FANN_HOME}/src/include ${GUROBI_HOME}/include ${OMP_HOME}/include)
+link_directories(${FANN_HOME}/src ${LIBSVM_HOME}/windows ${GUROBI_HOME}/lib ${OMP_HOME}/lib)
 
 if(APPLE)
   include_directories(SYSTEM ${OMP_HOME}/include)
